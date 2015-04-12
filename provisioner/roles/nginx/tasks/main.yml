@@ -1,0 +1,15 @@
+---
+- name: Install Nginx
+  apt: name=nginx state=present
+
+- name: Copy nginx conf
+  copy: src=nginx-node.conf dest=/etc/nginx/sites-available/mosaics
+  notify: restart nginx
+
+- name: Create symlink to mosaics
+  file: src=/etc/nginx/sites-available/mosaics dest=/etc/nginx/sites-enabled/mosaics state=link
+  notify: restart nginx
+
+- name: remove default symlink
+  file: path=/etc/nginx/sites-enabled/default state=absent
+  notify: restart nginx

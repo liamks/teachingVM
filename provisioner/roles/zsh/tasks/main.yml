@@ -1,0 +1,21 @@
+---
+- name: Install ZSH
+  apt: name=zsh state=present
+
+- name: Copy Oh My Zsh install file
+  copy: src=install-oh-my-zsh.sh 
+        dest=/home/{{ user }}/install-oh-my-zsh.sh
+        owner={{ user }}
+        mode=0644
+
+- name: Copy Zprofile
+  copy: src=zshrc
+        dest=/home/{{ user }}/.zshrc
+        owner={{ user }}
+
+- name: Run install oh my zsh
+  sudo: yes
+  command: sh /home/{{ user }}/install-oh-my-zsh.sh
+
+- name: Set zsh as default shell
+  user: name={{ user }} shell=/bin/zsh

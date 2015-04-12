@@ -1,0 +1,14 @@
+---
+- hosts: dev
+  sudo: true
+  roles:
+    - misc
+    - git
+    - zsh
+    - psql
+    - redis
+    - mongodb
+    - nginx
+    - node
+    - ruby
+    - ruby-on-rails

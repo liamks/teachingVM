@@ -1,0 +1,40 @@
+---
+# https://groups.google.com/forum/#!topic/ansible-project/R4Ho-oqJf3o
+
+- name: Download Redis
+  get_url: url=http://download.redis.io/releases/redis-{{redis_version}}.tar.gz 
+           dest=/tmp/redis-{{redis_version}}.tar.gz
+
+- name: Untar Redis
+  command: chdir=/tmp creates=redis-{{redis_version}} tar -xzf redis-{{redis_version}}.tar.gz
+
+# had to run `make distclean` when this failed
+- name: Install Redis
+  command: chdir=/tmp/redis-{{redis_version}} creates=/usr/local/bin/redis-server make install
+  tags: redis
+
+- name: Create user redis
+  user: name=redis system=yes home=/var/lib/redis shell=/bin/false
+
+- name: Create Redis Folder
+  file: path=/etc/redis state=directory
+
+- name: Copy Redis Conf
+  copy: src=redis.conf dest=/etc/redis/redis.conf
+
+- name: Copy Redis-LRU Conf
+  copy: src=redis-lru.conf dest=/etc/redis/redis-lru.conf
+
+- name: Configure Upstart for Redis
+  copy: src=redis-upstart.conf dest=/etc/init/redis.conf
+  notify: Restart Redis
+
+- name: Configure Upstart for Redis-LRU
+  copy: src=redis-lru-upstart.conf dest=/etc/init/redis-lru.conf
+  notify: Restart Redis-LRU
+
+- name: Start Redis
+  service: name=redis state=started
+
+- name: Start Redis-LRU
+  service: name=redis-lru state=started
