@@ -23,8 +23,11 @@
   command: tar -zxf /home/ubuntu/ruby-{{ ruby_version}}.tar creates=/home/ubuntu/ruby-{{ ruby_version }}
 
 - name: Make, configure, and install ruby
-  command: {{ item }} chdir=/home/ubuntu/ruby-{{ ruby_version }}
+  command: "{{ item }} chdir=/home/ubuntu/ruby-{{ ruby_version }}"
   with_items:
     - ./configure
     - make
     - sudo make install
+
+- name: Install Ruby on Rails
+  gem: name=rails version=4.2.1 state=present

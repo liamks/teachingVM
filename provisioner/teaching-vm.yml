@@ -7,8 +7,7 @@
     - zsh
     - psql
     - redis
-    - mongodb
-    - nginx
+    #- mongodb
+    #- nginx
     - node
     - ruby
-    - ruby-on-rails
