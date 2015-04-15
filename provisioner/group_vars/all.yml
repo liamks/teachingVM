@@ -1,6 +1,5 @@
 ---
-ansible_ssh_user: dev
-user: dev
+ansible_ssh_user: vagrant
 
 redis_version: 3.0.0
 

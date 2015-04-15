@@ -15,3 +15,10 @@
 ## Misc
 - Git
 - ImageMagick
+
+# From provisioner folder
+```
+ansible-playbook teaching-vm.yml -i hosts -kK
+
+# password is dev
+```

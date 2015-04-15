@@ -22,19 +22,9 @@
 - name: Copy Redis Conf
   copy: src=redis.conf dest=/etc/redis/redis.conf
 
-- name: Copy Redis-LRU Conf
-  copy: src=redis-lru.conf dest=/etc/redis/redis-lru.conf
-
 - name: Configure Upstart for Redis
   copy: src=redis-upstart.conf dest=/etc/init/redis.conf
   notify: Restart Redis
 
-- name: Configure Upstart for Redis-LRU
-  copy: src=redis-lru-upstart.conf dest=/etc/init/redis-lru.conf
-  notify: Restart Redis-LRU
-
 - name: Start Redis
   service: name=redis state=started
-
-- name: Start Redis-LRU
-  service: name=redis-lru state=started
