@@ -1,0 +1,20 @@
+#
+- name: Add Mongodb key
+  apt_key: url='http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x7F0CEB10' state=present
+
+- name: Add Mongo repo
+  apt_repository: repo='deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' state=present
+
+- name: Install Mongodb and dependencies
+  apt: name={{ item }} update_cache=yes
+  with_items:
+    - mongodb-org 
+    - git 
+    - build-essential 
+
+- name: Install Mongod dependencies v2
+  apt: name={{ item }} update_cache=yes
+  with_items:
+    - openssl 
+    - libssl-dev 
+    - pkg-config
