@@ -30,5 +30,3 @@
     - make
     - sudo make install
 
-- name: Install Ruby on Rails
-  gem: name=rails version=4.2.1 state=present
