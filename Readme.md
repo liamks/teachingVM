@@ -48,7 +48,13 @@ Putty is used to SSH into your VM.
 ### Windows
 
 1. Open Putty
-2. [GET INSTRUCTIONS]
+2. Fill in the following
+  a. Host Name (or IP address) = `127.0.0.1`
+  b. Port = `2202` (If that's wrong, it should in your VM's options)
+  c. [Optional] In saved Sessions enter "TeachingVM", click save
+  d. Click "Open" to start the SSH session
+
+![Connect to VM](/screenshots/putty.png?raw=true "Connect to VM")
 
 ## TeachingVM Contains
 
