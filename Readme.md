@@ -1,6 +1,6 @@
 # Teaching VM
 
-## Getting Started
+## Getting Started (Windows & Mac)
 
 1. Download VirtualBox from: `https://www.virtualbox.org/wiki/Downloads`*
 2. Install VirtualBox
@@ -8,6 +8,13 @@
 4. In VirtualBox, import TeachingVM.ova (File -> Import Appliance)
 
 *Alternatively I've brought USB keys with the above.
+
+## Windows Users
+
+1. Download Putty from: `http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html` (Choose the "A Windows installer for everything except PuTTYtel")
+2. Install Putty.
+
+Putty is used to SSH into your VM.
 
 ## Setting Up Shared folders
 
@@ -30,6 +37,18 @@
 * Folder Path: Select your Documents folder
 * Folder Name: `/home/vagrant/documents`
 * Click Ok!
+
+## Connecting to your VM
+
+### Mac 
+
+1. Open termal
+2. Enter: `ssh -p 2202 vagrant@127.0.0.1`
+
+### Windows
+
+1. Open Putty
+2. [GET INSTRUCTIONS]
 
 ## TeachingVM Contains
 
