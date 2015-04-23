@@ -6,7 +6,6 @@
 2. Install VirtualBox
 3. Download virtual machine ("TeachingVM.ova")*
 4. In VirtualBox, import TeachingVM.ova (File -> Import Appliance)
-
 *Alternatively I've brought USB keys with the above.
 
 ## Windows Users
@@ -49,10 +48,10 @@ Putty is used to SSH into your VM.
 
 1. Open Putty
 2. Fill in the following
-  a. Host Name (or IP address) = `127.0.0.1`
-  b. Port = `2202` (If that's wrong, it should in your VM's options)
-  c. [Optional] In saved Sessions enter "TeachingVM", click save
-  d. Click "Open" to start the SSH session
+  1. Host Name (or IP address) = `127.0.0.1`
+  2. Port = `2202` (If that's wrong, it should in your VM's options)
+  3. [Optional] In saved Sessions enter "TeachingVM", click save
+  4. Click "Open" to start the SSH session
 
 ![Connect to VM](/screenshots/putty.png?raw=true "Connect to VM")
 
