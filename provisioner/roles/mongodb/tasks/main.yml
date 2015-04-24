@@ -9,7 +9,6 @@
   apt: name={{ item }} update_cache=yes
   with_items:
     - mongodb-org 
-    - git 
     - build-essential 
 
 - name: Install Mongod dependencies v2

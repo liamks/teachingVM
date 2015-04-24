@@ -18,10 +18,10 @@
     - libffi-dev
 
 - name: Download ruby
-  get_url: url={{ ruby_url }} dest=/home/ubuntu/ruby-{{ ruby_version }}.tar
+  get_url: url={{ ruby_url }} dest=/home/{{ user }}/ruby-{{ ruby_version }}.tar
 
 - name: Extract ruby
-  command: tar -zxf /home/{{ user }}/ruby-{{ ruby_version}}.tar creates=/home/{{ user }}/ruby-{{ ruby_version }}
+  command: tar -zxf /home/{{ user }}/ruby-{{ ruby_version }}.tar creates=/home/{{ user }}/ruby-{{ ruby_version }}
 
 - name: Make, configure, and install ruby
   command: "{{ item }} chdir=/home/{{ user }}/ruby-{{ ruby_version }}"

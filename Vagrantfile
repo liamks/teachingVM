@@ -1,5 +1,6 @@
 Vagrant.configure(2) do |config|
   config.vm.box = "ubuntu/trusty64"
+  config.vm.define "TeachingVM"
 
   config.vm.network "forwarded_port", guest: 80, host: 5010
 
@@ -12,9 +13,8 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.provision :ansible do |ansible|
-      ansible.groups = {
-        "dev" => ["default"],
-        "dev" => ["default"]
+    ansible.groups = {
+      "dev" => ["TeachingVM"]
     }
 
     ansible.playbook = "provisioner/teaching-vm.yml"
