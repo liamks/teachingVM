@@ -9,3 +9,12 @@
     - imagemagick
     - libmagickcore-dev
     - libmagickwand-dev
+
+
+- name: Fix locales
+  sudo: yes
+  shell: locale-gen en_CA en_CA.UTF-8
+
+- name: Fix locales2
+  sudo: yes
+  shell: dpkg-reconfigure locales

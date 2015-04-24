@@ -71,7 +71,6 @@ Putty is used to SSH into your VM.
 - Git
 - ImageMagick
 
-
 ## Advanced
 ### Starting VM with Vagrant
 
@@ -84,31 +83,33 @@ vagrant up
 vagrant provision
 ```
 
-### Installing Rails
-```
-sudo gem install rails
-sudo gem install pg
-```
 ### Creating Rails app with Postgres
+
+#### Step 1: Create App
 ```
 rails new yourappname --database=postgresql
 ```
 
- Edit config/database.yml
+#### Step 2: Update Database config
+ Edit config/database.yml. You'll have the add the username, password and host lines.
+
  ```yml
-development:
-  <<: *default
-  database: addresses_development
-
-  # The specified database role being used to connect to postgres.
-  # To create additional roles in postgres see `$ createuser --help`.
-  # When left blank, postgres will use the default role. This is
-  # the same name as the operating system user that initialized the database.
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  # For details on connection pooling, see rails configuration guide
+  # http://guides.rubyonrails.org/configuring.html#database-pooling
+  pool: 5
   username: rails
-
-  # The password associated with the postgres role (username).
   password: rails
+  host: localhost
  ```
+
+### Step 3: run these commands
+```
+rake db:migrate
+rake db:setup
+```
 
 ### Running Ruby on Rails
 

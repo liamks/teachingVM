@@ -30,3 +30,10 @@
     - make
     - sudo make install
 
+- name: Install Ruby on Rails
+  sudo: yes
+  command: gem install rails
+
+- name: Instal PG gem
+  sudo: yes
+  command: gem install pg
