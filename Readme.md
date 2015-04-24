@@ -83,3 +83,35 @@ vagrant up
 ```
 vagrant provision
 ```
+
+### Installing Rails
+```
+sudo gem install rails
+sudo gem install pg
+```
+### Creating Rails app with Postgres
+```
+rails new yourappname --database=postgresql
+```
+
+ Edit config/database.yml
+ ```yml
+development:
+  <<: *default
+  database: addresses_development
+
+  # The specified database role being used to connect to postgres.
+  # To create additional roles in postgres see `$ createuser --help`.
+  # When left blank, postgres will use the default role. This is
+  # the same name as the operating system user that initialized the database.
+  username: rails
+
+  # The password associated with the postgres role (username).
+  password: rails
+ ```
+
+### Running Ruby on Rails
+
+```
+bin/rails server -b 0.0.0.0
+```

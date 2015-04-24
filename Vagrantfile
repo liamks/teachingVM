@@ -3,6 +3,9 @@ Vagrant.configure(2) do |config|
 
   config.vm.network "forwarded_port", guest: 80, host: 5010
 
+  # Ruby on Rails default port
+  config.vm.network "forwarded_port", guest: 3000, host: 3001
+
   config.vm.provider "virtualbox" do |vb|
     vb.memory = "2048"
     vb.cpus = "2"
