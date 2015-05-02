@@ -107,8 +107,8 @@ default: &default
 
 ### Step 3: run these commands
 ```
-rake db:migrate
 rake db:setup
+rake db:migrate
 ```
 
 ### Running Ruby on Rails

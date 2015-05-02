@@ -7,6 +7,9 @@ Vagrant.configure(2) do |config|
   # Ruby on Rails default port
   config.vm.network "forwarded_port", guest: 3000, host: 3001
 
+
+  config.vm.synced_folder "~/Documents", "/home/vagrant/documents"
+
   config.vm.provider "virtualbox" do |vb|
     vb.memory = "2048"
     vb.cpus = "2"
