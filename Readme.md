@@ -116,3 +116,11 @@ rake db:migrate
 ```
 bin/rails server -b 0.0.0.0
 ```
+
+### Viewing your Ruby on Rails App
+
+On your machine (not the VM) open a browser and go to `http://127.0.0.1:3001/`.
+
+### View your NodeJS App
+
+Once you've started your app go to `http://127.0.0.1:5001/`
