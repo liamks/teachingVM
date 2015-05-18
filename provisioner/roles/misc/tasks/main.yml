@@ -18,3 +18,7 @@
 - name: Fix locales2
   sudo: yes
   shell: dpkg-reconfigure locales
+
+- name: Download VBoxGuestAdditions
+  get_url: url=http://dlc-cdn.sun.com/virtualbox/4.3.28/VBoxGuestAdditions_{{vbox_version}}.iso
+           dest=/home/{{ user }}/VBoxGuestAdditions_{{vbox_version}}.iso

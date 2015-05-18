@@ -12,3 +12,5 @@ db_pword: rails
 db_user_name: rails
 
 user: vagrant
+
+vbox_version: 4.3.28
