@@ -77,3 +77,40 @@ Now we need to tell our app that the `index` method in our `WelcomeController` s
 # You can have the root of your site routed with "root"
 root 'welcome#index'
 ```
+
+When you reload your rails app (assuming your rails app is still running), you should see the new landing page with the current time.
+
+## Step 5: Creating The User Model
+
+Users are key component to just about any app, and especially Twitter. Let's use Rails' generate to create our model and migration file. The migration file is what Rails uses to actually create a table in the database.
+
+```
+rails generate model User name handle
+```
+
+The above will create a model called `User` and will create a migration file in `db/migrate`. The migration's file name should start with a timestamp and end with `_create_users.rb`.  The migration will create a table with 5 columns, two of which we defined explicitely: name and handle. The third is `id` which is done implicitly by rails. Finally the 4th and 5th are `created_at` and `updated_at` timestamps. 
+
+To actually create the table run:
+
+```
+rake db:migrate
+```
+
+Before we proceed let's create a couple users using Rails' console (a REPL)[http://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop]. To start the console run:
+
+```
+rails console
+```
+The following commands are done inside the console:
+
+```
+julie = User.new name: "Julie Newmar", handle: "julie"
+julia.save
+```
+The first line creates the user, in memory only, and the second line saves them to the database. We can do those two actions with a single method (`create`):
+
+```
+frank = User.create name: "Frank Smith", handle: "franky"
+```
+
+To exit the console type `exit`. We've now created a User model and two users!
