@@ -96,21 +96,81 @@ To actually create the table run:
 rake db:migrate
 ```
 
-Before we proceed let's create a couple users using Rails' console (a REPL)[http://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop]. To start the console run:
+Before we proceed let's create a couple users using Rails' console ([a REPL](http://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop)). To start the console run:
 
 ```
 rails console
 ```
 The following commands are done inside the console:
 
-```
+```ruby
 julie = User.new name: "Julie Newmar", handle: "julie"
 julia.save
 ```
 The first line creates the user, in memory only, and the second line saves them to the database. We can do those two actions with a single method (`create`):
 
-```
+```ruby
 frank = User.create name: "Frank Smith", handle: "franky"
 ```
 
 To exit the console type `exit`. We've now created a User model and two users!
+
+## Step 6: Creating the Tweet Model
+
+Now that we have a user model, we need to create a Tweet model. That is each user should be able to create many tweets. This model should be able to encapsulate the tweet's content and the tweet's relationship to a user. First let's create the model.
+
+```
+rails generate model Tweet content:text
+```
+
+Open up the migration in `db/migrate` - the migration file should end with `_create_tweets.rb` and update it so it looks like: 
+
+```ruby
+class CreateTweets < ActiveRecord::Migration
+  def change
+    create_table :tweets do |t|
+      t.text :content
+      t.references :user, index: true
+      t.timestamps null: false
+    end
+  end
+end
+```
+
+`t.references` creates a column called `user_id` which associated each tweet with a single user. Now run:
+
+```
+rake db:migrate
+```
+
+That will create the `tweets` table in the database. Let's open up the console and create some tweets. To open the console type `rails console`. In the console:
+
+```rails
+t1 = Tweet.create content: "First tweet!", user_id: 1
+t2 = Tweet.create content: "second tweetzzz", user_id: 2
+Tweet.all
+exit
+```
+
+The first two lines create two new tweets and associated them with user 1 and user 2. The third command returns all the tweets in the database.
+
+Now we need to update both the User and Tweet model to let Rails know they are related - this will make our life easier.
+
+Open `app/models/tweet.rb` and update it to look like:
+
+```ruby
+class Tweet < ActiveRecord::Base
+  belongs_to :user
+end
+```
+
+the `belongs_to` method tells Rails that the Tweet model is associated with the User model. Now open `app/models/user.rb` and update it to look like:
+
+```ruby
+class User < ActiveRecord::Base
+  has_many :tweets
+end
+```
+
+This is the other side of the relationship which tells Rails that each user might be associated with 0 or more tweets. Defining these relationships provides us with several convenience methods for fetching a user's tweets and creating new ones.
+
