@@ -104,7 +104,7 @@ rails console
 The following commands are done inside the console:
 
 ```ruby
-julie = User.new name: "Julie Newmar", handle: "julie"
+julia = User.new name: "Julie Newmar", handle: "julie"
 julia.save
 ```
 The first line creates the user, in memory only, and the second line saves them to the database. We can do those two actions with a single method (`create`):
@@ -172,5 +172,33 @@ class User < ActiveRecord::Base
 end
 ```
 
-This is the other side of the relationship which tells Rails that each user might be associated with 0 or more tweets. Defining these relationships provides us with several convenience methods for fetching a user's tweets and creating new ones.
+This is the other side of the relationship which tells Rails that each user might be associated with 0 or more tweets. Defining these relationships provides us with several convenience methods for fetching a user's tweets and creating new ones. Now let's explore what new syntatic sugar defining these relationships gives us. Open the console (`rails console`).
 
+```ruby
+julia = User.first
+julia.tweets
+```
+
+By defining the relationship, we can call `tweets` on the instance of User (in this case julia) and get all of her tweets. Furthermore we can create tweets for julia much easier:
+
+```ruby
+julia.tweets.create content: "A tweet by julia"
+```
+
+`julia.tweets.create` will automatically add julia's `user_id` to the created tweet.
+
+## Step 7: Creating the Tweet Controller
+
+Now that we've a user model and a tweet model it's time to create a tweet controller so we can actually view tweets in a browser. Let's use one of Rails' generators to create our controller, views and routes. 
+
+```bash
+rails generate scaffold_controller Tweet
+```
+
+By calling `scaffold_controller`, instead of just `controller`, it will fill in the `TweetsController` with a set of default methods, and code, to create, read, update, and view tweets. If we just ran the command with `controller` it would create an empty controller. If we now run:
+
+```
+rake  routes
+```
+
+You should see 8 new routes that are mapped to "actions" (methods) in the `TweetsController`.
