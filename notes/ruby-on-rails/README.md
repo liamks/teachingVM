@@ -201,4 +201,55 @@ By calling `scaffold_controller`, instead of just `controller`, it will fill in 
 rake  routes
 ```
 
-You should see 8 new routes that are mapped to "actions" (methods) in the `TweetsController`.
+You should see 8 new routes that are mapped to "actions" (methods) in the `TweetsController`. You should see the following:
+
+```
+       Prefix Verb   URI Pattern                Controller#Action
+welcome_index GET    /welcome/index(.:format)   welcome#index
+         root GET    /                          welcome#index
+       tweets GET    /tweets(.:format)          tweets#index
+              POST   /tweets(.:format)          tweets#create
+    new_tweet GET    /tweets/new(.:format)      tweets#new
+   edit_tweet GET    /tweets/:id/edit(.:format) tweets#edit
+        tweet GET    /tweets/:id(.:format)      tweets#show
+              PATCH  /tweets/:id(.:format)      tweets#update
+              PUT    /tweets/:id(.:format)      tweets#update
+              DELETE /tweets/:id(.:format)      tweets#destroy
+```
+
+If you start the rails server (`rails server`) you can visit some of those new pages. Specifically you can go to `http://localhost:3001/tweets` to view all the tweets. If you visit the page you'll notice that you can't actually see the tweets, you'll have to make an update to this view. All of tweet views are in `app/views/tweets` - open `app/views/tweets/index.html.erb` and update the `<table>` to look like:
+
+```erb
+<table>
+  <thead>
+    <tr>
+      <th>Tweet</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @tweets.each do |tweet| %>
+      <tr>
+        <td><%= tweet.content %></td>
+        <td><%= link_to 'Show', tweet %></td>
+        <td><%= link_to 'Edit', edit_tweet_path(tweet) %></td>
+        <td><%= link_to 'Destroy', tweet, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+```
+
+By adding `tweet.content` we're telling the view to display each tweet's content. If you refresh `http://localhost:3001/tweets` you should now see the content of each tweet. Now click on a tweet - the same issue is present with this page, the contents of the tweet aren't showing. Let's update the view - open `app/views/tweets/show.html.erb` and update it to:
+
+```erb
+<p id="notice"><%= notice %></p>
+
+<p>
+  <%= @tweet.content %>
+</p>
+
+<%= link_to 'Edit', edit_tweet_path(@tweet) %> |
+<%= link_to 'Back', tweets_path %>
+```
