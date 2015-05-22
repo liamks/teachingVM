@@ -253,3 +253,39 @@ By adding `tweet.content` we're telling the view to display each tweet's content
 <%= link_to 'Edit', edit_tweet_path(@tweet) %> |
 <%= link_to 'Back', tweets_path %>
 ```
+
+If you reload the page it should now show the tweet's content. Now click `Edit` and you'll see a form without any inputs. We'll have to add those. If you open either `app/views/tweets/edit.html.erb` or `app/views/tweets/new.html.erb` you'll notice that they both include the following line:
+
+```erb
+<%= render 'form' %>
+```
+
+`'form'` is a partial - a partial is a way of creating a small resuable view that can be rendered into multiple views. By convention, the file name of the partial is prefixed with an underscore - `app/views/tweets/_form.html.erb`. By updating the `_form.html.erb` partial we should see updates to both the edit and new pages that include it. We'll go ahead and change it to:
+
+```erb
+<%= form_for(@tweet) do |f| %>
+  <% if @tweet.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@tweet.errors.count, "error") %> prohibited this tweet from being saved:</h2>
+
+      <ul>
+      <% @tweet.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :content, "Tweet" %> <br>
+    <%= f.text_field :content %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
+```
+
+If you reload the edit page you should now see the content of the tweet in the text field. If you click save you should see the following error:
+
+![ForbiddenAttributesError](/notes/ruby-on-rails/ForbiddenAttributesError.png?raw=true "ForbiddenAttributesError")
