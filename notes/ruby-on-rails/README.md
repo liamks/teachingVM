@@ -2,6 +2,11 @@
 
 These instructions assume that ruby, rails and psql are already setup. Some of these instructions are also specific to the VM that they are running on.
 
+## Additional Documentation
+
+* [Active Record](http://guides.rubyonrails.org/active_record_basics.html)
+* [Form Helpers](http://guides.rubyonrails.org/form_helpers.html)
+
 ## Step 1: Creating your app
 
 ```bash
