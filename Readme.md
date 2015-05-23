@@ -106,41 +106,7 @@ vagrant provision
 
 ### Creating Rails app with Postgres
 
-#### Step 1: Create App
-```
-rails new yourappname --database=postgresql
-```
-
-#### Step 2: Update Database config
- Edit config/database.yml. You'll have the add the username, password and host lines.
-
- ```yml
-default: &default
-  adapter: postgresql
-  encoding: unicode
-  # For details on connection pooling, see rails configuration guide
-  # http://guides.rubyonrails.org/configuring.html#database-pooling
-  pool: 5
-  username: rails
-  password: rails
-  host: localhost
- ```
-
-### Step 3: run these commands
-```
-rake db:setup
-rake db:migrate
-```
-
-### Running Ruby on Rails
-
-```
-bin/rails server -b 0.0.0.0
-```
-
-### Viewing your Ruby on Rails App
-
-On your machine (not the VM) open a browser and go to `http://127.0.0.1:3001/`.
+[Notes for creating A Rails App](./notes/ruby-on-rails/README.md)
 
 ### View your NodeJS App
 
