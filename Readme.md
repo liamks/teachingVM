@@ -17,27 +17,52 @@ Putty is used to SSH into your VM.
 
 ## Setting Up Shared folders
 
-### Step 1: In VirtualBox select TeachingVM
+### Step 1: Install VBoxGuestAdditions (virtualbox guest additions)
+```
+sudo mkdir /media/ga
+sudo mount -o loop VBoxGuestAdditions_4.3.28.iso /media/ga
+cd /media/ga/
+sudo ./VBoxLinuxAdditions.run 
+```
+
+Above we're creating a folder `ga` and mounting the VBoxGuestAdditions `.iso` to that folder. Then
+we go into the folder and install guest additions by running `sudo ./VboxLinuxAdditions.run`.
+
+### Step 2: In VirtualBox select TeachingVM
 
 ![Select TeachingVM](/screenshots/shared-folders/1-virtualbox.png?raw=true "Select TeachingVM")
 
-### Step 2: Click Settings
+### Step 3: Click Settings
 
 ![Settings](/screenshots/shared-folders/2-settings.png?raw=true "Settings")
 
-### Step 3: Click Shared Folders
+### Step 4: Click Shared Folders
 
 ![Shared Folders](/screenshots/shared-folders/3-shared-folders.png?raw=true "Shared Folders")
 
-## Step 4: Click the + folder to add a new shared folder
+## Step 5: Click the + folder to add a new shared folder
 
 ![Add Shared Folders](/screenshots/shared-folders/4-add-shared-folder.png?raw=true "Add Shared Folder")
 
 * Folder Path: Select your Documents folder
-* Folder Name: `/home/vagrant/documents`
+* Folder Name: `docs`
 * Click Ok!
+* Restart your VM (right click on VM, close > Power Off, then start it again)
+
+## Step 6: Mounting the shared folder into the VM
+
+We've installed guest additions, and selected the folder we want to share, now we need to mount it! Run the following command:
+
+```
+sudo mount -t vboxsf docs /home/vagrant/documents/ -o rw,uid=1000,gid=1000
+```
+
+Unfortunately, if you restart you're VM you'll have to run that command again, to fix that edit `/etc/rc.local` by adding `mount -t vboxsf docs /home/vagrant/documents/ -o rw,uid=1000,gid=1000` above the `exit 0` line.
+
 
 ## Connecting to your VM
+
+While you can connect to yoru VM through the window created by VirtualBox the experience is usually unpleasant! I recommend SSH'ing into the machine via your terminal (Mac) or Putty (windows).
 
 ### Mac 
 
