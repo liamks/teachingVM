@@ -36,20 +36,16 @@ we go into the folder and install guest additions by running `sudo ./VboxLinuxAd
 
 ![Settings](/screenshots/shared-folders/2-settings.png?raw=true "Settings")
 
-### Step 4: Click Shared Folders
+### Step 4: Click Shared Folders, then + folder to add a new shared folder
 
-![Shared Folders](/screenshots/shared-folders/3-shared-folders.png?raw=true "Shared Folders")
+![Add Shared Folders](/screenshots/shared-folders/3-add-shared-folder.png?raw=true "Add Shared Folder")
 
-## Step 5: Click the + folder to add a new shared folder
-
-![Add Shared Folders](/screenshots/shared-folders/4-add-shared-folder.png?raw=true "Add Shared Folder")
-
-* Folder Path: Select your Documents folder
+* Folder Path: Select your Documents folder (or what ever folder you want to access in the VM)
 * Folder Name: `docs`
 * Click Ok!
 * Restart your VM (right click on VM, close > Power Off, then start it again)
 
-## Step 6: Mounting the shared folder into the VM
+## Step 5: Mounting the shared folder into the VM
 
 We've installed guest additions, and selected the folder we want to share, now we need to mount it! Run the following command:
 
