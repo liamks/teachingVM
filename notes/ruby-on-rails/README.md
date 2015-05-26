@@ -200,6 +200,8 @@ Now that we've a user model and a tweet model it's time to create a tweet contro
 rails generate scaffold_controller Tweet
 ```
 
+Now open `config/routes.rb` and add the line `resources :tweets` - this will create routes that will map to the actions in the TweetsController.
+
 By calling `scaffold_controller`, instead of just `controller`, it will fill in the `TweetsController` with a set of default methods, and code, to create, read, update, and view tweets. If we just ran the command with `controller` it would create an empty controller. If we now run:
 
 ```
@@ -297,6 +299,42 @@ If you reload the edit page you should now see the content of the tweet in the t
 
 ## Part 2 (Second Workshop)
 
-1. To fix the `ForbiddenAttributersError` Open `app/controllers/tweets_controller.rb` and change line 72 to: `params.require(:tweet).permit(:content)`.
-2. Restart your rails app - you should be able to create new tweets, and update existing tweets.
-3. Adding user authentication with [Devise](https://github.com/plataformatec/devise)
+### Step 1. 
+
+To fix the `ForbiddenAttributersError` Open `app/controllers/tweets_controller.rb` and change line 72 to: `params.require(:tweet).permit(:content)`.
+
+### Step 2. 
+
+Restart your rails app - you should be able to create new tweets, and update existing tweets.
+### Step 3. 
+
+Adding user authentication with [Devise](https://github.com/plataformatec/devise)
+
+### Step 4. 
+
+Add `gem 'devise'` to your Gemfile, in the root of your app
+### Step 5 
+
+Run `rails generate devise:install` to install Devise on your app.
+
+1. In `config/environments/development.rb` add `config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }`
+2. In `app/views/layouts/application.html.erb` add `<p class="notice"><%= notice %></p><p class="alert"><%= alert %></p>` to line 10.
+3. run `rails g devise:views` to add Devise views to your app (e.g. login, logout, register, etc).
+
+### Step 6. 
+
+Run `rails generate devise User` to add devise to our User model (Open the new migration file that was created to see what's being added to the User model/table)
+
+### Step 7. 
+
+*before* running the migration you'll have to delete the existing users and their tweets. Log into psql 
+
+`psql --username=rails -d twitterclone_development` (password is rails) and run `delete from tweets;` and `delete from users;`
+
+### Step 8. 
+
+Now run `rake db:migrate`
+
+### Step 9.
+
+Congratulations, you've added Devise to your app! Users can now register, login, logout, reset their passwords and more.
