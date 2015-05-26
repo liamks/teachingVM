@@ -294,3 +294,9 @@ If you reload the page it should now show the tweet's content. Now click `Edit` 
 If you reload the edit page you should now see the content of the tweet in the text field. If you click save you should see the following error:
 
 ![ForbiddenAttributesError](/notes/ruby-on-rails/ForbiddenAttributesError.png?raw=true "ForbiddenAttributesError")
+
+## Part 2 (Second Workshop)
+
+1. To fix the `ForbiddenAttributersError` Open `app/controllers/tweets_controller.rb` and change line 72 to: `params.require(:tweet).permit(:content)`.
+2. Restart your rails app - you should be able to create new tweets, and update existing tweets.
+3. Adding user authentication with [Devise](https://github.com/plataformatec/devise)
