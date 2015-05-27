@@ -337,4 +337,63 @@ Now run `rake db:migrate`
 
 ### Step 9.
 
-Congratulations, you've added Devise to your app! Users can now register, login, logout, reset their passwords and more.
+Congratulations, you've added Devise to your app! Users can now register, login, logout, reset their passwords and more. To check what URLs are associated with login, register, logout, etc run `rake routes`. Devise should have added:
+
+```
+                  Prefix Verb   URI Pattern                    Controller#Action
+        new_user_session GET    /users/sign_in(.:format)       devise/sessions#new
+            user_session POST   /users/sign_in(.:format)       devise/sessions#create
+    destroy_user_session DELETE /users/sign_out(.:format)      devise/sessions#destroy
+           user_password POST   /users/password(.:format)      devise/passwords#create
+       new_user_password GET    /users/password/new(.:format)  devise/passwords#new
+      edit_user_password GET    /users/password/edit(.:format) devise/passwords#edit
+                         PATCH  /users/password(.:format)      devise/passwords#update
+                         PUT    /users/password(.:format)      devise/passwords#update
+cancel_user_registration GET    /users/cancel(.:format)        devise/registrations#cancel
+       user_registration POST   /users(.:format)               devise/registrations#create
+   new_user_registration GET    /users/sign_up(.:format)       devise/registrations#new
+  edit_user_registration GET    /users/edit(.:format)          devise/registrations#edit
+                         PATCH  /users(.:format)               devise/registrations#update
+                         PUT    /users(.:format)               devise/registrations#update
+                         DELETE /users(.:format)               devise/registrations#destroy
+```
+
+### Step 10. Creating a top menu with login/logout & register links
+
+In `app/views/layouts/` create a file called `_top_menu.html.erb` - "partial" that will hold our menu. We will create a very basic menu (we will improve it in a later step). In `_top_menu.html.erb` add the following code:
+
+```erb
+<ul>
+  <% if user_signed_in? %>
+  
+  <li>
+    <%= link_to current_user.email, '/' %>
+  </li>
+  <li>
+    <%= link_to "Sign Out", destroy_user_session_path, method: "DELETE" %>
+  </li>
+
+  <% else %>
+
+  <li>
+    <%= link_to "Sign In", new_user_session_path %>
+  </li>
+  <li>
+    <%= link_to "Register", new_user_registration_path %>
+  </li>
+
+  <% end %>
+</ul>
+```
+
+Finally, add `<%= render 'layouts/top_menu' %>` to `app/views/layouts/application.html.erb` right after the line with the opening `<body>` tag. The `render` statement is what actually includes the partial into the main application's layout. Reload your app and you should see the links "Sign In" and "Register" at the top of the page. Go ahead and click register to create a new user.
+
+### Step 11. Update the TweetsController
+
+Now we need to update the TweetsController to only show tweets of the logged in user, and ensure that only a logged in user can create tweets. Add the following to `TweetsController` (`app/controllers/tweets_controllers.rb`) after line 2:
+
+```ruby
+  before_action :authenticate_user!, except: [:index, :show]
+```
+
+That will ensure that the user *has* to be authenticated before every action except index and show.
