@@ -396,4 +396,138 @@ Now we need to update the TweetsController to only show tweets of the logged in 
   before_action :authenticate_user!, except: [:index, :show]
 ```
 
-That will ensure that the user *has* to be authenticated before every action except index and show.
+That will ensure that the user *has* to be authenticated before every action except index and show. Now lets show the user's tweets if their looking at the index page, and if they're not logged in we'll show everyone else's tweets. In the `TweetsController` update the `index` method (aka action) to look like:
+
+```ruby
+def index
+  if user_signed_in?
+    @tweets = current_user.tweets
+  else
+    @tweets = Tweet.all
+  end
+end
+```
+
+### Step 12. Add Bootstrap to project
+
+We will be using the `bootstrap-sass` gem to ad Twitter's Bootstrap CSS library. Add `gem 'bootstrap-sass', '~> 3.3.4'` to the `Gemfile` right before the line that has `gem 'sass-rails', '~> 5.0'`.
+
+Now run `bundle install`.
+
+Now rename `app/assets/stylesheets/application.css` to `app/assets/stylesheets/application.scss` (we've only changed the extension). Then open `app/assets/stylesheets/application.scss` and delete the contents of the file and replace them with:
+
+```css
+@import "bootstrap-sprockets";
+@import "bootstrap";
+@import "bootstrap/theme";
+```
+
+If you restart the server, and reload the page, you'll notice that the fonts and some of the styles have changed. We have successfully added [Bootstrap](http://getbootstrap.com/). Let's now proceed to adding bootstrap classes and making our clone look a little nice.
+
+#### 1. Update The Top Menu
+
+Start by opening `app/views/layouts/_top_menu.html.erb` and making updates so the file should look like the folllowing:
+
+```
+<header class="navbar navbar-inverse navbar-static-top">
+  <div class="container">
+    <div class="navbar-header">
+      <%= link_to "Twitter Clone", root_path, class: "navbar-brand" %>
+    </div>
+    <nav>
+      <ul class="nav navbar-nav navbar-right">
+        <% if user_signed_in? %>
+        
+        <li>
+          <%= link_to current_user.email, '/' %>
+        </li>
+        <li>
+          <%= link_to "Sign Out", destroy_user_session_path, method: "DELETE" %>
+        </li>
+
+        <% else %>
+
+        <li>
+          <%= link_to "Sign In", new_user_session_path %>
+        </li>
+        <li>
+          <%= link_to "Register", new_user_registration_path %>
+        </li>
+
+        <% end %>
+      </ul>
+    </nav>
+  </div>
+</header>
+```
+
+#### 2. Update The Flash Message
+
+Replace line 11 on `app/views/layouts/application.html.erb` with:
+
+```
+<%= render 'layouts/flash_messages' %>
+```
+
+Now we need to create the partial (resuable view) that we've just referenced. In `app/views/layouts/` add a file named `_flash_message.html.erb` and fill it with:
+
+```erb
+<div class="container">
+  <% if notice %>
+  <p class="alert alert-success"><%= notice %></p>
+  <% end %>
+
+  <% if alert %>
+  <p class="alert alert-danger"><%= alert %></p>
+  <% end %>
+</div>
+```
+
+3. Update Login/register
+
+We'd like to jazz up the login and registration page.
+
+Add a `authentication.scss` to `app/assets/stylesheets/` and inside it add:
+
+```css
+.user-auth-box-outer{
+  text-align: center;
+}
+
+.user-auth-box{
+  width: 400px;
+  text-align: left;
+  margin: 10px auto;
+  padding: 5px;
+  background-color: #eee;
+  border: 1px solid #ddd;
+}
+```
+
+Now, import this new file into `application.scss`:
+
+```css
+@import 'authentication'
+```
+
+Finally, surround the existing content in `app/views/devise/sessions/new.html.erb` with:
+
+```html
+<div class="user-auth-box-outer">
+  <div class="user-auth-box">
+    <!-- EXISTING CONTENT -->
+  </div>
+</div>
+```
+
+4. Adding icons
+
+### Step 13. Deploy to Heroku
+
+
+### Step 14. Basic debugging
+
+```
+<%= debug @article %>
+``` 
+
