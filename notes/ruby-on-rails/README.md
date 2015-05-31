@@ -389,7 +389,7 @@ In `app/views/layouts/` create a file called `_top_menu.html.erb`, this file is 
 </ul>
 ```
 
-Note `link_to` which is a "link helper". You should recognize `new_user_session_path` as everything before `_path` is in the `Prefix` column of the routes table.
+Note `link_to` which is a "link helper". You should recognize `new_user_session_path` as `new_user_session` is in the `Prefix` column. By combining a "Prefix" (e.g. `new_user_session`) with `_path` (e.g. `new_user_session_path) you get a method that returns the path for that route (useful for links).
 
 Finally, add `<%= render 'layouts/top_menu' %>` to `app/views/layouts/application.html.erb` right after the line with the opening `<body>` tag. The `render` statement is what actually includes the partial into the main application's layout. Reload your app and you should see the links "Sign In" and "Register" at the top of the page. Go ahead and click register to create a new user.
 
@@ -433,7 +433,7 @@ If you restart the server, and reload the page, you'll notice that the fonts and
 
 Start by opening `app/views/layouts/_top_menu.html.erb` and making updates so the file should look like the folllowing:
 
-```
+```erb
 <header class="navbar navbar-inverse navbar-static-top">
   <div class="container">
     <div class="navbar-header">
@@ -472,7 +472,7 @@ Again we're making heaving use of "link helpers" and we have some conditional lo
 
 Replace line 11 on `app/views/layouts/application.html.erb` with:
 
-```
+```erb
 <%= render 'layouts/flash_messages' %>
 ```
 
@@ -529,7 +529,7 @@ Finally, surround the existing content in `app/views/devise/sessions/new.html.er
 
 ### Step 13. Deploy to Heroku
 
-Once you've created an account with Heroku, create a new app. In the deploy tab click on Github and authorize your account to be used by Heroku. Now you can deploy with a click of the button, or deploy everthime someone merges into master.
+Once you've created an account with Heroku, create a new app. In the deploy tab click on Github and authorize your account to be used by Heroku. Now you can deploy by simply clicking a button, or you can deploy everytime someone merges into master.
 
 
 
