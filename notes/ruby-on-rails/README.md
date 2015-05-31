@@ -301,18 +301,19 @@ If you reload the edit page you should now see the content of the tweet in the t
 
 ### Step 1. 
 
-To fix the `ForbiddenAttributersError` Open `app/controllers/tweets_controller.rb` and change line 72 to: `params.require(:tweet).permit(:content)`.
+To fix the `ForbiddenAttributersError` Open `app/controllers/tweets_controller.rb` and change line 72 to: `params.require(:tweet).permit(:content)`. This creates an explicit whitelist on what attributes of the `Tweet` model can be updated.
 
 ### Step 2. 
 
 Restart your rails app - you should be able to create new tweets, and update existing tweets.
 ### Step 3. 
 
-Adding user authentication with [Devise](https://github.com/plataformatec/devise)
+Adding user authentication with [Devise](https://github.com/plataformatec/devise). I highly recommend always using a well respected 3rd party library/gem/package for doing authentication. Not only is it a lot of work to build a fully functioning authentication system, but there are many things that you can do wrong that can lead to security issues. Only build your own for educational purposes, for anything you plan on using in a production setting use a 3rd party library - we will use Devise.
 
 ### Step 4. 
 
 Add `gem 'devise'` to your Gemfile, in the root of your app
+
 ### Step 5 
 
 Run `rails generate devise:install` to install Devise on your app.
@@ -327,7 +328,7 @@ Run `rails generate devise User` to add devise to our User model (Open the new m
 
 ### Step 7. 
 
-*before* running the migration you'll have to delete the existing users and their tweets. Log into psql 
+*before* running the migration you'll have to delete the existing users and their tweets. If you don't delete the tweets and users the above migration will fail as it includes some constraints that will be invalid in your existing data. Log into psql 
 
 `psql --username=rails -d twitterclone_development` (password is rails) and run `delete from tweets;` and `delete from users;`
 
@@ -358,9 +359,11 @@ cancel_user_registration GET    /users/cancel(.:format)        devise/registrati
                          DELETE /users(.:format)               devise/registrations#destroy
 ```
 
+Please take note of the first column `Prefix`, you can use these to easily create links in your app using "link helpers" (examples in the next step).
+
 ### Step 10. Creating a top menu with login/logout & register links
 
-In `app/views/layouts/` create a file called `_top_menu.html.erb` - "partial" that will hold our menu. We will create a very basic menu (we will improve it in a later step). In `_top_menu.html.erb` add the following code:
+In `app/views/layouts/` create a file called `_top_menu.html.erb`, this file is what Ruby on Rails calls a "partial", it will hold our menu. We will create a very basic menu (we will improve it in a later step). In `_top_menu.html.erb` add the following code:
 
 ```erb
 <ul>
@@ -386,6 +389,8 @@ In `app/views/layouts/` create a file called `_top_menu.html.erb` - "partial" th
 </ul>
 ```
 
+Note `link_to` which is a "link helper". You should recognize `new_user_session_path` as everything before `_path` is in the `Prefix` column of the routes table.
+
 Finally, add `<%= render 'layouts/top_menu' %>` to `app/views/layouts/application.html.erb` right after the line with the opening `<body>` tag. The `render` statement is what actually includes the partial into the main application's layout. Reload your app and you should see the links "Sign In" and "Register" at the top of the page. Go ahead and click register to create a new user.
 
 ### Step 11. Update the TweetsController
@@ -396,7 +401,7 @@ Now we need to update the TweetsController to only show tweets of the logged in 
   before_action :authenticate_user!, except: [:index, :show]
 ```
 
-That will ensure that the user *has* to be authenticated before every action except index and show. Now lets show the user's tweets if their looking at the index page, and if they're not logged in we'll show everyone else's tweets. In the `TweetsController` update the `index` method (aka action) to look like:
+That will ensure that the user *has* to be authenticated before every action except index and show. Now lets show the user's tweets if they're looking at the index page. If they're not logged in we'll show everyone else's tweets. In the `TweetsController` update the `index` method (aka action) to look like:
 
 ```ruby
 def index
@@ -410,7 +415,7 @@ end
 
 ### Step 12. Add Bootstrap to project
 
-We will be using the `bootstrap-sass` gem to ad Twitter's Bootstrap CSS library. Add `gem 'bootstrap-sass', '~> 3.3.4'` to the `Gemfile` right before the line that has `gem 'sass-rails', '~> 5.0'`.
+We will be using the `bootstrap-sass` gem to ad Twitter's Bootstrap CSS library. Bootstrap gives us a collection of CSS that helps our app look great without needing to hire a designer! Add `gem 'bootstrap-sass', '~> 3.3.4'` to the `Gemfile` right before the line that has `gem 'sass-rails', '~> 5.0'`.
 
 Now run `bundle install`.
 
@@ -460,6 +465,8 @@ Start by opening `app/views/layouts/_top_menu.html.erb` and making updates so th
   </div>
 </header>
 ```
+
+Again we're making heaving use of "link helpers" and we have some conditional logic for whether the use is signed in or not (`user_signed_in?`, a method provided by Devise).
 
 #### 2. Update The Flash Message
 
@@ -520,14 +527,10 @@ Finally, surround the existing content in `app/views/devise/sessions/new.html.er
 </div>
 ```
 
-4. Adding icons
-
 ### Step 13. Deploy to Heroku
 
+Once you've created an account with Heroku, create a new app. In the deploy tab click on Github and authorize your account to be used by Heroku. Now you can deploy with a click of the button, or deploy everthime someone merges into master.
 
-### Step 14. Basic debugging
 
-```
-<%= debug @article %>
-``` 
+
 
