@@ -66,7 +66,7 @@ redditApp.config(['$routeProvider',
         controller : 'HomeCtrl',
         controllerAs : 'home'
       })
-      .when('/r/:subreddit/comments/:id/:slug', {
+      .when('/r/:subreddit/comments/:id/:slug/', {
         templateUrl : 'templates/comments.html',
         controller : 'CommentsCtrl',
         controllerAs : 'comments'
@@ -126,4 +126,80 @@ Unfortunately, if you try and load the app you'll get a bunch of errors in the c
 
 ## Step 6 - Loading our Reddis data
 
-Now that we have a basic understand of routes, controllers and views, it's time to learn above services! Services come in 3 varieties: providers, factories and services. All three produce singleton object and they're effectively the same (for the purpose of this workshop we'll use factories). In AngularJS business logic, and API calls, are done with a service. 
+Now that we have a basic understand of routes, controllers and views, it's time to learn above services! Services come in 3 varieties: providers, factories and services. All three produce singleton object and they're effectively the same (for the purpose of this workshop we'll use factories). In AngularJS, business logic and API calls are done with a service. We'll create a service called: `RedditService` that we'll use for interacting with Reddit's API.
+
+Create a file called services.js, this is where we'll place our `RedditService`. Add a reference to the file in `index.html`, right before the reference to app:
+
+```html
+<script type="text/javascript" src="services.js"></script>
+<script type="text/javascript" src="app.js"></script>
+```
+
+In `services.js` add the following:
+
+```javascript
+var services = angular.module('services', []);
+
+services.factory('RedditService', ['$http', 
+  function($http){
+    function Reddit(){};
+
+    Reddit.domain = 'http://www.reddit.com';
+
+    Reddit.top = function(){
+      var path = '/top.json';
+      var url = Reddit.domain + path;
+
+      return $http.get(url)
+        .then(function(response){
+          return response.data.data;
+        });
+    };
+
+    Reddit.comments = function(sub, id, slug){
+
+    };
+
+    return Reddit;
+  }
+]);
+```
+
+In `app.js` we'll have to add `servies` as a dependency of our app. Update the following line in `app.js` to:
+
+```javascript
+var redditApp = angular.module('RedditApp', ['ngRoute', 'services']);
+```
+
+Now let's connect the service to the controller!
+
+Update the `HomeCtrl` to:
+
+```javascript
+redditApp.controller('HomeCtrl', [ 'RedditService',
+  function(RedditService){
+    
+    RedditService.top()
+      .then(function(stories){
+        this.stories = stories;
+      }.bind(this));
+
+  }
+]);
+```
+
+Update `home.html` to:
+
+```html
+<h1>Top Stories</h1>
+
+<div class="stories">
+  <div class="story" ng-repeat="story in home.stories">
+    <h2><a ng-href="{{ story.data.url }}" target="_blank">{{ story.data.title }}</a></h2>
+    <p>
+      {{ story.data.score }} votes | 
+      <a href="#{{ story.data.permalink }}">{{ story.data.num_comments }} comments</a>
+    </p>
+  </div>
+</div>
+```
