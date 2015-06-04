@@ -69,7 +69,7 @@ redditApp.config(['$routeProvider',
       .when('/r/:subreddit/comments/:id/:slug/', {
         templateUrl : 'templates/comments.html',
         controller : 'CommentsCtrl',
-        controllerAs : 'comments'
+        controllerAs : 'cmnts'
       })
       .otherwise('/');
   }
@@ -204,7 +204,7 @@ Update `home.html` to:
 </div>
 ```
 
-To get the comments page working we'll have to update the `RedditService`, `CommentsCtrl` and `comments.html`. First we'll update the service.
+Now let's add a bit of CSS to our page. Add the following to `style.css`:
 
 ```css
 body {
@@ -223,5 +223,66 @@ a {
   margin: 0;
   padding: 0;
 }
-
 ```
+
+## Step 7 - Loading Comments
+
+To get the comments page working we'll have to update the `RedditService`, `CommentsCtrl` and `comments.html`. First we'll update the service. In `services.js` add the following to the `RedditService`:
+
+```javascript
+Reddit.comments = function(params){
+  var path = '/r/' + params.subreddit + 
+             '/comments/' + params.id + 
+             '/' + params.slug + '.json';
+
+  var url = Reddit.domain + path;
+
+  return $http.get(url)
+    .then(function(response){
+      return response.data[1].data.children;
+    });
+};
+```
+
+The above makes an AJAX request to the comments API and grabs just the comments from the response (comments are nested in `response`).
+
+Now update the `CommentsCtrl` to use the the `comments` function that we just created:
+
+```javascript
+redditApp.controller('CommentsCtrl', ['$routeParams', 'RedditService',
+  function($routeParams, RedditService){
+    this.params = $routeParams;
+
+    RedditService.comments($routeParams)
+      .then(function(comments){
+        this.comments = comments;
+      }.bind(this));
+  }
+]);
+```
+
+Next, we'll update the `comments.html` view:
+
+```html
+<p>Comments</p>
+
+<div class="comments">
+  <div class="comment" ng-repeat="comment in cmnts.comments">
+    {{ comment.data.author }}
+    <p>{{ comment.data.body }}</p>
+  </div>
+</div>
+```
+
+Finally we'll add a bit of CSS to `style.css`
+
+```css
+.comment {
+  border-bottom: 1px solid #ccc;
+  padding: 4px 0;
+}
+```
+
+## Step 8
+
+The [Reddit API](http://www.reddit.com/dev/api) is pretty extensive, I'd encourage you to go further and add more functionality to your app.
