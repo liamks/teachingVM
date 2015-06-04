@@ -203,3 +203,25 @@ Update `home.html` to:
   </div>
 </div>
 ```
+
+To get the comments page working we'll have to update the `RedditService`, `CommentsCtrl` and `comments.html`. First we'll update the service.
+
+```css
+body {
+  font: normal small verdana,arial,helvetica,sans-serif;
+}
+
+a {
+  text-decoration: none;
+}
+
+.story {
+  margin: 12px 0;
+}
+
+.story p, h2 {
+  margin: 0;
+  padding: 0;
+}
+
+```
