@@ -1,5 +1,18 @@
 # Creating a Reddit app with AngularJS
 
+## Why AngularJS
+
+To understand why Angular has had such a huge impact, it's important to understand the state of web apps in 2012 (when AngularJS hit 1.0 status). In 2012 BackboneJS was likely the most popular framework for building single-page javascript applications. Backbone was incredably small, it was really a library that together with underscore and jQuery amounted to a framework. However, it was easy to learn and people liked it. Those who used Backbone started to notice a lot of boilerplate code was required to do very simple things. Some (e.g. [marionetteJS](http://marionettejs.com/)) solved this by creating yet another framework that worked ontop of Backbone. Marrionette took care of all the repetitive tasks and boilerplate code. In other words you had to write much less code to get something done. 
+
+Despite the progress of Marrionette, and similar projects, people were still looking for JavaScript framework that did for single-page apps what Rails did for websites. In 2012, AngularJS was the best bet. It was a large framework with many features - you could build a decent app with very little code. As an added bonus Google backed AngularJS. It's popularity grew quickly and it's now one of the most popular frameworks for building single-page apps.
+
+www.weather.com
+Vevo.com
+http://www.msnbc.com/
+https://www.virginamerica.com/
+https://www.tuftandneedle.com/
+Google's DoubleClick
+
 TODO: High level explanation for value of AngularJS
 
 ## Angular's Parts
