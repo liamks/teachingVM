@@ -122,15 +122,15 @@ In `home.html`:
 In `comments.html`:
 
 ```html
-<p>{{ comments.params }}</p>
+<p>{{ cmnts.params }}</p>
 ```
 
 Finally, we need to update the `index.html` file, after the `<body>` tag add the following:
 
 ```
-  <a href="#/">Home</a>
-  <a href="#/r/test/comments/1/a-test-article">A test article</a>
-  <div ng-view></div>
+<a href="#/">Home</a>
+<a href="#/r/test/comments/1/a-test-article">A test article</a>
+<div ng-view></div>
 ```
 
 The first two lines are links to our two different routes. The final line, `<div ng-view></div>` tells AngularJS where to render the views when a link is matched (e.g. the html from the template is inserted into the div). 
