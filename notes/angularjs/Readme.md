@@ -165,7 +165,7 @@ services.factory('RedditService', ['$http',
 
       return $http.get(url)
         .then(function(response){
-          return response.data.data;
+          return response.data.data.children;
         });
     };
 
