@@ -355,3 +355,30 @@ In the above code we've completed 5 routes that allow us to:
 3. create an entry (`POST /`)
 4. update an entry (`PUT /:id`)
 5. destroy an entry (`DELETE /:id`)
+
+You'll notice that each function on our model (`all`, `find`, `create`, `update`, `delete`) accepts a callback that takes two parameters: 1) the return value from the query and 2) an error. To handle a potential error we check if the error is defined and if it is we change the status code to 400 and return a JSON version of the error. Alternatively if their is no error we return the result of the query in JSON.
+
+## Step 8 - Deploying to Heroku
+
+In the root of your app create a file called `Procfile` and in it:
+
+```
+web: node index.js
+```
+
+The `Procfile` tells Heroku how to run our app.
+
+1. Create a free Heroku account if you haven't already: https://signup.heroku.com/signup/dc
+2. Download Heroku Toolbelt https://devcenter.heroku.com/articles/getting-started-with-nodejs#set-up
+3. Run `heroku login`
+
+Assuming `heroku login` worked, it should return `Authentication successful.`. I'm also assuming your app is a git repo. Next enter the following commands one at a time:
+
+```
+heroku create
+heroku addons:create mongolab
+git push heroku master
+heroku open
+```
+
+`heroku create` adds the heroku origin to your git repo. `heroku addons:create mongolab` adds mongodb to our app. `git push heroku master` deploys our app and finally `heroku open` opens it in a browser.
