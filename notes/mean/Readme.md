@@ -382,3 +382,9 @@ heroku open
 ```
 
 `heroku create` adds the heroku origin to your git repo. `heroku addons:create mongolab` adds mongodb to our app. `git push heroku master` deploys our app and finally `heroku open` opens it in a browser.
+
+## MEAN Workshop Part 2
+
+## step 8 - Setting up our AngularJS app
+
+Download AngularJS from the home page
