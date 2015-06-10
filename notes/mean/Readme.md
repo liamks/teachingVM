@@ -387,4 +387,46 @@ heroku open
 
 ## step 8 - Setting up our AngularJS app
 
-Download AngularJS from the home page
+We'll now need to setup our express app to serve an `index.html` file that will run our AngularJS app in a user's browser. To do so we'll need to make several additions to the `index.js` file:
+
+After the line with `app.use(bodyParser.json());` add:
+
+```javascript
+app.use(express.static('public'));
+```
+
+This allows our app to serve static files (e.g. JavaScript, CSS, images) from a folder called `public` (we'll need to create that folder in the next step).
+
+Then add the following (after the line with `app.use('/api/blog-entries', blogEntries);`):
+
+```javascript
+app.get('/*', function(req, res){
+  res.sendFile(__dirname + '/views/index.html');
+});
+```
+
+The above route will match any url that hasn't already been matched and it will serve the client an `index.html` file.
+
+Now that we've made changes to `index.js` we'll need to create the folders and files that the above code expects. Go ahead and create a folder called `views` and in it create a file called `index.html` with the following content:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0/angular.min.js"></script>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0/angular-route.min.js"></script>
+
+  <script type="text/javascript" src="/js/app.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="/css/main.css">
+</head>
+<body>
+  Hello World
+</body>
+</html>
+```
+
+This is the start of our AngularJS app. We're include AngularJS, as well as Angular's router. Finally we're including a `app.js`, and `main.css`.
+
+Now create a folder called `public` and put two folders in it: `css` and `js`. In `css` create a file called `main.css` and in `js` create a file called `app.js`.
