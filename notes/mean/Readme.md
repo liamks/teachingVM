@@ -382,3 +382,263 @@ heroku open
 ```
 
 `heroku create` adds the heroku origin to your git repo. `heroku addons:create mongolab` adds mongodb to our app. `git push heroku master` deploys our app and finally `heroku open` opens it in a browser.
+
+## MEAN Workshop Part 2
+
+## step 8 - Setting up our static assets app
+
+We'll now need to setup our express app to serve an `index.html` file that will run our AngularJS app in a user's browser. To do so we'll need to make several additions to the `index.js` file:
+
+After the line with `app.use(bodyParser.json());` add:
+
+```javascript
+app.use(express.static('public'));
+```
+
+This allows our app to serve static files (e.g. JavaScript, CSS, images) from a folder called `public` (we'll need to create that folder in the next step).
+
+Then add the following (after the line with `app.use('/api/blog-entries', blogEntries);`):
+
+```javascript
+app.get('/*', function(req, res){
+  res.sendFile(__dirname + '/views/index.html');
+});
+```
+
+The above route will match any url that hasn't already been matched and it will serve the client an `index.html` file.
+
+Now that we've made changes to `index.js` we'll need to create the folders and files that the above code expects. Go ahead and create a folder called `views` and in it create a file called `index.html` with the following content:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0/angular.min.js"></script>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0/angular-route.min.js"></script>
+
+  <script type="text/javascript" src="/js/app.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="/css/main.css">
+</head>
+<body>
+  Hello World
+</body>
+</html>
+```
+
+This is the start of our AngularJS app. We're include AngularJS, as well as Angular's router. Finally we're including a `app.js`, and `main.css`.
+
+Now create a folder called `public` and put two folders in it: `css` and `js`. In `css` create a file called `main.css` and in `js` create a file called `app.js`.
+
+## Step 9 - Initializing our AngularJS app.
+
+In `index.html` update the `<html>` tag to: `<html ng-app="meanBlog">`. This informs AngularJS that our Angular app will be inside of the `<html>` DOM element. Now update the `<body>` tag to:
+
+```html
+<body ng-init="msg='World'">
+  Hello {{msg}}
+</body>
+```
+
+The above code will allow us to test if we've created our Angualr app correctly. In the `ng-init` we're creating a variable called `msg` and assigning the string `'World'` to it. Finally we reference the `msg` variable by using Angular's interpolation (the curly brackets).
+
+Now we need to initialize our app in `app.js` add:
+
+```javascript
+var app = angular.module('meanBlog', []);
+```
+
+If you restart your express server and go to http://127.0.0.1:5001 you should see "Hello World" if everything is working correctly.
+
+To get a feel for some of the things we can do without writing any JavaScript let's make some changes to the `<body>` tag again and update it to:
+
+```html
+<body ng-init="counter=0;">
+  <button ng-click="counter=counter+1;">Increment counter</button>
+  <div>count is at: {{counter}}</div>
+</body>
+```
+
+The above code initializes a `counter` variable to 0. `ng-click` will run the code `counter=counter+1` everytime the button is clicked. Finally AngularJS will update the view to show the latest value of the `counter` variable. Refresh your browser and give it a try.
+
+Let's do one more example before we move on:
+
+```html
+<body ng-init="shouldShow=false;">
+  <button ng-click="shouldShow=!shouldShow">Toggle Hidden Hello</button>
+  <div ng-show="shouldShow">Hidden Hello</div>
+</body>
+```
+
+The above code initializes a variable called `shouldShow` with a boolean value of false. When the button is clicked `ng-click` will run `shouldShow=!shouldShow` which will toggle `shouldShow` from false to true. `ng-show` will only show the current DOM element that is on if `shouldShow` is true. Reload the page and try it out.
+
+`ng-init`, `ng-click` and `ng-show` are all examples of what AngularJS calls directives. According to Angular documentation directives are a way of "teching html to do new things". The creators of Angular noticed that there are a certain set of actions that just about every app needs to do do the DOM (e.g. hide and show elements, responds to clicks and so on). Directives make this easy to do.
+
+## Step 9 - The controller
+
+We will now create our first controller, it will be used to show a list of blog entries. In `app.js` add the following:
+
+```html
+app.controller('EntriesIndexCtrl', 
+function($scope){
+
+  $scope.entries = [
+    {title : 'First entry', body : 'This is my first blog post'},
+    {title : 'Second', body: 'A classic example of another....'},
+    {title : 'Oldy', body: 'How could we not forget writing...'}
+  ];
+  
+});
+```
+
+This creates a controller called `EntriesIndexCtrl` and in it we assign an array of 3 blog entries to a variable called `$scope.entries`. `$scope` is special - anything on the `$scope` can be accessed in view/template. We'll update `<body>` again and replace it with:
+
+```html
+<body ng-controller="EntriesIndexCtrl">
+  <div>{{entries}}</div>
+</body>
+```
+
+The above code says that anything in the `<body>` will be controlled by the `EntriesIndexCtrl` and will have access to anything on the controller's `$scope`. In the `<div>` we can reference `entries` since it's on the `$scope` variable. Reload the page and you should see an array of objects - not verry pleasing to the eye! Let's update the `<body>` again with:
+
+```javascript
+<body ng-controller="EntriesIndexCtrl">
+  <div class="blog-entry" ng-repeat="entry in entries">
+    <h2>{{entry.title}}</h2>
+    <p>{{entry.body}}</p>
+  </div>
+</body>
+```
+
+`ng-repeat` is a nother directive that will 1) render the DOM element it is on once for every element in the array it's given and 2) allow us to access elements in the array (e.g. `entry.title`).
+
+## Step 10 - Multiple Views & Controllers
+
+Currently our app only has a single controller and we have no way of going from one view in the app, to another. To do so, we'll have to use Angular's router to map specific URLs to specific controller/view pairs. The first step is updating the `<body>` one last time to:
+
+```html
+<body>
+  <div ng-view></div>
+</body>
+```
+
+Angular's router will, based on the URL, find a specific view and place it inside of `<div ng-view></div>` and associate a specific controller with that view.
+
+Let's setup the mapping for two views. Update `apps.js` (just the first line) to:
+
+```html
+var app = angular.module('meanBlog', ['ngRoute']);
+
+app.config(function($routeProvider){
+  $routeProvider
+    .when('/', {
+      templateUrl : 'templates/home.html',
+      controller : 'EntriesIndexCtrl'
+    })
+    .when('/entry/:id', {
+      templateUrl : 'templates/entry.html',
+      controller : 'EntriesShowCtrl'
+    })
+    .otherwise('/');
+});
+```
+
+In the first line we declare that our app is dependent on `ngRoute`. Then we call `.config` on our app to configure our app's routes. The `$routeProvider` as a function `.when()` that maps a url (`'/'`) with a template and controller. 
+
+Now in the `public` folder create a new folder called `templates` and create two files in it called: `home.html` and `entry.html`
+
+In `home.html`:
+```html
+<div class="blog-entry" ng-repeat="entry in entries">
+  <h2>{{entry.title}}</h2>
+  <p>{{entry.body}}</p>
+</div>
+```
+
+In `entry.html`:
+```html
+{{entry}}
+```
+Now that we've made both of the templates that we specified in `app.config()` we'll need to create the `EntriesShowCtrl` (the `EntriesIndexCtrl` already exists). Add the following to `app.js`
+
+```javascript
+app.controller('EntriesShowCtrl', 
+function($scope){
+  $scope.entry = {
+    title : 'An entry',
+    body : 'How could we not forget writing...'
+  };
+});
+```
+
+Reload the app and you should still see a list of blog entries. If you go to `http://127.0.0.1:5001/#/entry/43` you should see the hard-coded entry.
+
+Looking back at the `.config()` block you'll notice that `id` is a param in the url (`'/entry/:id'`). To get access to that param in your `EntriesShowCtrl` we can do the following:
+
+```javascript
+app.controller('EntriesShowCtrl', 
+function($scope, $routeParams){
+  $scope.routeParams = $routeParams;
+  $scope.entry = {
+    title : 'An entry',
+    body : 'How could we not forget writing...'
+  };
+});
+```
+
+`$routeParams` is simply an object where the keys are the params defined in the `config` block and the values come from the actual url.
+
+## Step 10 - Creating a Form
+
+In `app.js`, in the `.config()` block, add another route:
+
+```javascript
+.when('/entry/create', {
+  templateUrl : 'templates/entry-form.html',
+  controller : 'EntriesCreateCtrl'
+})
+```
+
+When the url is `/entry/create` AngularJS will use the template `entry-form.html` with the controller `EntriesCreateCtrl`.Now in `app.js` we'll create the controller `EntriesCreateCtrl`:
+
+```javascript
+app.controller('EntriesCreateCtrl',
+function($scope){
+  $scope.entry = {
+    title : '',
+    body: ''
+  }
+
+  $scope.save = function(entry){
+    console.log(entry);
+  };
+});
+```
+
+In the above code we create a new empty entry and we create a `.save()` function. At the moment `.save()` just logs the `entry` to the console, but at a later step save will actually initiate an API request to save the entry.
+
+In `templates` create a new template `entry-form.html` and inside of it:
+
+```html
+<h1>Create a blog entry</h1>
+<form ng-submit="save(entry)">
+  <label>Title:<br>
+    <input type="text" name="title" ng-model="entry.title">
+  </label>
+
+  <br>
+  <label>Content:<br>
+    <textarea ng-model="entry.body"></textarea>
+  </label>
+
+  <input type="submit" value="Save">
+</form>
+
+<h2>preview:</h2>
+<h4>{{entry.title}}</h4>
+<p>{{entry.body}}</p>
+```
+
+`ng-submit` says: when the form is submitted, call the `.save()` function, in `EntriesCreateCtrl` and pass in the entry. `ng-model` binds a specific property of the entry to a form input (e.g. input & textarea). To show off Angular's 2-way binding we create a simple preview that will show progress live.
+
