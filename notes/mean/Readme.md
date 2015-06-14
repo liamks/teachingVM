@@ -513,3 +513,132 @@ The above code says that anything in the `<body>` will be controlled by the `Ent
 
 `ng-repeat` is a nother directive that will 1) render the DOM element it is on once for every element in the array it's given and 2) allow us to access elements in the array (e.g. `entry.title`).
 
+## Step 10 - Multiple Views & Controllers
+
+Currently our app only has a single controller and we have no way of going from one view in the app, to another. To do so, we'll have to use Angular's router to map specific URLs to specific controller/view pairs. The first step is updating the `<body>` one last time to:
+
+```html
+<body>
+  <div ng-view></div>
+</body>
+```
+
+Angular's router will, based on the URL, find a specific view and place it inside of `<div ng-view></div>` and associate a specific controller with that view.
+
+Let's setup the mapping for two views. Update `apps.js` (just the first line) to:
+
+```html
+var app = angular.module('meanBlog', ['ngRoute']);
+
+app.config(function($routeProvider){
+  $routeProvider
+    .when('/', {
+      templateUrl : 'templates/home.html',
+      controller : 'EntriesIndexCtrl'
+    })
+    .when('/entry/:id', {
+      templateUrl : 'templates/entry.html',
+      controller : 'EntriesShowCtrl'
+    })
+    .otherwise('/');
+});
+```
+
+In the first line we declare that our app is dependent on `ngRoute`. Then we call `.config` on our app to configure our app's routes. The `$routeProvider` as a function `.when()` that maps a url (`'/'`) with a template and controller. 
+
+Now in the `public` folder create a new folder called `templates` and create two files in it called: `home.html` and `entry.html`
+
+In `home.html`:
+```html
+<div class="blog-entry" ng-repeat="entry in entries">
+  <h2>{{entry.title}}</h2>
+  <p>{{entry.body}}</p>
+</div>
+```
+
+In `entry.html`:
+```html
+{{entry}}
+```
+Now that we've made both of the templates that we specified in `app.config()` we'll need to create the `EntriesShowCtrl` (the `EntriesIndexCtrl` already exists). Add the following to `app.js`
+
+```javascript
+app.controller('EntriesShowCtrl', 
+function($scope){
+  $scope.entry = {
+    title : 'An entry',
+    body : 'How could we not forget writing...'
+  };
+});
+```
+
+Reload the app and you should still see a list of blog entries. If you go to `http://127.0.0.1:5001/#/entry/43` you should see the hard-coded entry.
+
+Looking back at the `.config()` block you'll notice that `id` is a param in the url (`'/entry/:id'`). To get access to that param in your `EntriesShowCtrl` we can do the following:
+
+```javascript
+app.controller('EntriesShowCtrl', 
+function($scope, $routeParams){
+  $scope.routeParams = $routeParams;
+  $scope.entry = {
+    title : 'An entry',
+    body : 'How could we not forget writing...'
+  };
+});
+```
+
+`$routeParams` is simply an object where the keys are the params defined in the `config` block and the values come from the actual url.
+
+## Step 10 - Creating a Form
+
+In `app.js`, in the `.config()` block, add another route:
+
+```javascript
+.when('/entry/create', {
+  templateUrl : 'templates/entry-form.html',
+  controller : 'EntriesCreateCtrl'
+})
+```
+
+When the url is `/entry/create` AngularJS will use the template `entry-form.html` with the controller `EntriesCreateCtrl`.Now in `app.js` we'll create the controller `EntriesCreateCtrl`:
+
+```javascript
+app.controller('EntriesCreateCtrl',
+function($scope){
+  $scope.entry = {
+    title : '',
+    body: ''
+  }
+
+  $scope.save = function(entry){
+    console.log(entry);
+  };
+});
+```
+
+In the above code we create a new empty entry and we create a `.save()` function. At the moment `.save()` just logs the `entry` to the console, but at a later step save will actually initiate an API request to save the entry.
+
+In `templates` create a new template `entry-form.html` and inside of it:
+
+```html
+<h1>Create a blog entry</h1>
+<form ng-submit="save(entry)">
+  <label>Title:<br>
+    <input type="text" name="title" ng-model="entry.title">
+  </label>
+
+  <br>
+  <label>Content:<br>
+    <textarea ng-model="entry.body"></textarea>
+  </label>
+
+  <input type="submit" value="Save">
+</form>
+
+<h2>preview:</h2>
+<h4>{{entry.title}}</h4>
+<p>{{entry.body}}</p>
+```
+
+`ng-submit` says: when the form is submitted, call the `.save()` function, in `EntriesCreateCtrl` and pass in the entry. `ng-model` binds a specific property of the entry to a form input (e.g. input & textarea). To show off Angular's 2-way binding we create a simple preview that will show progress live.
+
