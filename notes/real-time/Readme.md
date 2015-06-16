@@ -186,3 +186,121 @@ Update `public/templates/sidebar.html` to:
 ```
 
 The above will render the array of users and place a nice icon next to each one.
+
+## Step 3 - Chat
+
+First we'll update the `chat` service with a dummy function that we can fill in later:
+
+```javascript
+factory.sendMessage = function(msg){
+  console.log(msg);
+};
+```
+
+Eventually the above function will be used for sending a message to the server. Right now, it will just print the message to the console.`
+
+Then update the `ChatCtrl` and add: 
+```javascript
+$scope.message = { text : '' };
+
+$scope.sendMessage = function(){
+  chat.sendMessage($scope.message.text);
+  $scope.message.text = '';
+};
+```
+
+We create an object, with a text property and assign it to `$scope.message`, so we can use it in the view. `sendMessage` will take the current message and call `chat.sendMessage` and finally set the text back to `''`.
+
+Next update `public/templates/main.html` (lines 4 - 7) and change them to:
+```html
+<div class="input-conversation">
+  <input type="text" ng-model="message.text">
+  <button class="btn btn-primary" ng-click="sendMessage()">Send</button>
+</div>
+```
+
+`ng-model="message.text"` sets up the two way binding of `message.text` between the view and the controller. If the value is changed in the `<input>` it will also be changed in the controller, and vice versa. `ng-click="sendMessage()"` adds a click handler to the send button - specifically, when the user clicks on the button `sendMessage()` will be called.
+
+At this point we need to send the message to the server!
+
+Update the `chat` service's `sendMessage` function to:
+```javascript
+factory.sendMessage = function(msg){
+  socket.emit('send-message', {
+    message : msg
+  });
+};
+```
+
+The above will send/emit the `'send-message'` event to the server with the data: `{ message : msg }`.
+
+Next we need to add an event handler on the server to listen for the `'send-message'` event. In `index.js` in the `io.on('connection', function(socket){` block:
+
+```javascript
+socket.on('send-message', function(msg){
+  console.log(msg.message);
+});
+```
+
+At this point clients can send messages to the server, now we need to get the server to send the message to each connected client.
+
+In `index.js` update the `'send-message'` handler to:
+```javascript
+socket.on('send-message', function(msg){
+  msg.name = name;
+  broadcastNewMessage(msg);
+});
+```
+
+This adds the user's name to their message, then calls `broadcastNewMessage(msg)`, which we'll add to `index.js` (before the `io.on()` block):
+
+```javascript
+function broadcastNewMessage(msg){
+  _.each(sockets, function(socket){
+    socket.emit('new-message', msg);
+  });
+}
+```
+
+The server can now receive messages and send them to each connected client. Next, we need to make sure that each client can receive the message.
+
+In `chat` service, towards the top add:
+```javascript
+  factory.messages = [];
+```
+
+This will store the messages. Then, in the `initialize()` function, in `chat` service add:
+
+```javascript
+socket.on('new-message', function(msg){
+  factory.messages.unshift(msg);
+});
+```
+
+This will listen for `'new-message'` that are sent from the server to the client. We'll add each message to the beginning of the `factory.messages` array. 
+
+Next we need to update the `ChatCtrl` to listen for changes to the `factory.messages` array. Add the following to `ChatCtrl`:
+
+```javascript
+$scope.$watch(function(){
+  return chat.messages;
+}, function(messages){
+  $scope.messages = messages;
+});
+```
+
+The first callback returns `chat.messages`, if the value returned differs from the value returned by the previous digest cycle, it will call the second callback, which will update `$scope.messages`, which in turn will update our view (once we make a few changes to the view). Now we'll update the view (`public/templates/main.html`:
+
+```html
+<div class="conversation">
+ <ul>
+  <li ng-repeat="message in messages">
+    <strong>{{message.name}}</strong>: {{message.message}}
+  </li>
+ </ul>
+</div>
+<div class="input-conversation">
+  <input type="text" ng-model="message.text">
+  <button class="btn btn-primary" ng-click="sendMessage()">Send</button>
+</div>
+```
