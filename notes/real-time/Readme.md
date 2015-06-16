@@ -1,13 +1,29 @@
-# Download
+# Creating a Real-Time Chat App
 
-# Install
+## Download
+
+Download the [Starter Code](https://github.com/DCSIL-summer-course/real-time-chat/archive/0.1.zip) and unzip it to a folder that is shared with your VM.
+
+## Install 
+
+From the VM, in the `real-time-chat` folder:
+
+```
+npm install  --no-bin-links
+```
+
+That will install the starter code's dependencies.
 
 # Walkthrough of existing code
 
+The code consists of:
 
-# Creating our real-time chat app
+1. NodeJS/ExpressJS app `index.js`
+2. An `index.html` (`view/index.html`) file that includes our js files
+3. AngularJS app `public/js/app.js`
+4. AngularJS templates `public/templates/`
 
-## Step 1
+## Step 1 - Installing Socket.IO
 
 ```
 npm install socket.io --save --no-bin-links
@@ -304,3 +320,5 @@ The first callback returns `chat.messages`, if the value returned differs from t
   <button class="btn btn-primary" ng-click="sendMessage()">Send</button>
 </div>
 ```
+
+If you restart your server, and reload your page, you should be able to chat with another user (open up a new incognito tab, or a different browser).
